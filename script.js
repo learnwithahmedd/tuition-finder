@@ -1,0 +1,84 @@
+// Sample tutor data (later this could come from a real database)
+const tutors = [
+  { name: "Ayesha Khan", subject: "Math", location: "Rawalpindi", price: 1500 },
+  { name: "Bilal Ahmed", subject: "Physics", location: "Islamabad", price: 2000 },
+  { name: "Sara Malik", subject: "English", location: "Rawalpindi", price: 1200 },
+  { name: "Usman Tariq", subject: "Chemistry", location: "Lahore", price: 1800 },
+  { name: "Hina Raza", subject: "Math", location: "Islamabad", price: 1600 },
+  { name: "Ali Hassan", subject: "Biology", location: "Rawalpindi", price: 1700 },
+  { name: "Fatima Sheikh", subject: "English", location: "Islamabad", price: 1400 },
+  { name: "Zain Abbas", subject: "Computer Science", location: "Lahore", price: 2200 },
+  { name: "Noor Fatima", subject: "Physics", location: "Rawalpindi", price: 1900 },
+  { name: "Danish Iqbal", subject: "Math", location: "Lahore", price: 1300 }
+
+
+
+
+
+  
+];
+
+// Grab the container where tutor cards will go
+const tutorList = document.getElementById("tutor-list");
+
+// Function to display a list of tutors on the page
+function displayTutors(list) {
+  tutorList.innerHTML = ""; // clear old content
+
+  if (list.length === 0) {
+    tutorList.innerHTML = "<p>No tutors match your search.</p>";
+    return;
+  }
+
+  list.forEach(tutor => {
+    const card = document.createElement("div");
+    card.className = "tutor-card";
+    card.innerHTML = `
+      <h3>${tutor.name}</h3>
+      <p><strong>Subject:</strong> ${tutor.subject}</p>
+      <p><strong>Location:</strong> ${tutor.location}</p>
+      <p><strong>Price:</strong> Rs. ${tutor.price}</p>
+    `;
+    tutorList.appendChild(card);
+  });
+}
+
+// Show all tutors when the page first loads
+displayTutors(tutors);// Grab the search inputs and button
+const subjectInput = document.getElementById("subject-input");
+const locationInput = document.getElementById("location-input");
+const priceInput = document.getElementById("price-input");
+const searchBtn = document.getElementById("search-btn");
+
+// Function that filters tutors based on what the user typed
+function filterTutors() {
+  const subjectValue = subjectInput.value.trim().toLowerCase();
+  const locationValue = locationInput.value.trim().toLowerCase();
+  const priceValue = priceInput.value.trim();
+
+  const filtered = tutors.filter(tutor => {
+    const matchesSubject = subjectValue === "" || tutor.subject.toLowerCase().includes(subjectValue);
+    const matchesLocation = locationValue === "" || tutor.location.toLowerCase().includes(locationValue);
+    const matchesPrice = priceValue === "" || tutor.price <= Number(priceValue);
+
+    return matchesSubject && matchesLocation && matchesPrice;
+  });
+
+  displayTutors(filtered);
+}
+
+// Run filterTutors() whenever the Search button is clicked
+searchBtn.addEventListener("click", filterTutors);[subjectInput, locationInput, priceInput].forEach(input => {
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      filterTutors();
+    }
+  });
+});const resetBtn = document.getElementById("reset-btn");
+
+resetBtn.addEventListener("click", () => {
+  subjectInput.value = "";
+  locationInput.value = "";
+  priceInput.value = "";
+  displayTutors(tutors);
+});
