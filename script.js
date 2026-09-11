@@ -10,12 +10,6 @@ const tutors = [
   { name: "Zain Abbas", subject: "Computer Science", location: "Lahore", price: 2200 },
   { name: "Noor Fatima", subject: "Physics", location: "Rawalpindi", price: 1900 },
   { name: "Danish Iqbal", subject: "Math", location: "Lahore", price: 1300 }
-
-
-
-
-
-  
 ];
 
 // Grab the container where tutor cards will go
@@ -34,7 +28,10 @@ function displayTutors(list) {
     const card = document.createElement("div");
     card.className = "tutor-card";
     card.innerHTML = `
-      <h3>${tutor.name}</h3>
+      <div class="card-top">
+        <div class="avatar">${tutor.name.charAt(0)}</div>
+        <h3>${tutor.name}</h3>
+      </div>
       <p><strong>Subject:</strong> ${tutor.subject}</p>
       <p><strong>Location:</strong> ${tutor.location}</p>
       <p><strong>Price:</strong> Rs. ${tutor.price}</p>
@@ -44,11 +41,14 @@ function displayTutors(list) {
 }
 
 // Show all tutors when the page first loads
-displayTutors(tutors);// Grab the search inputs and button
+displayTutors(tutors);
+
+// Grab the search inputs and buttons
 const subjectInput = document.getElementById("subject-input");
 const locationInput = document.getElementById("location-input");
 const priceInput = document.getElementById("price-input");
 const searchBtn = document.getElementById("search-btn");
+const resetBtn = document.getElementById("reset-btn");
 
 // Function that filters tutors based on what the user typed
 function filterTutors() {
@@ -68,14 +68,18 @@ function filterTutors() {
 }
 
 // Run filterTutors() whenever the Search button is clicked
-searchBtn.addEventListener("click", filterTutors);[subjectInput, locationInput, priceInput].forEach(input => {
+searchBtn.addEventListener("click", filterTutors);
+
+// Let Enter key trigger search too
+[subjectInput, locationInput, priceInput].forEach(input => {
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       filterTutors();
     }
   });
-});const resetBtn = document.getElementById("reset-btn");
+});
 
+// Reset button clears inputs and shows all tutors again
 resetBtn.addEventListener("click", () => {
   subjectInput.value = "";
   locationInput.value = "";
