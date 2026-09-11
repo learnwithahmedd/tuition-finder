@@ -47,7 +47,8 @@ header p {
   flex-wrap: wrap;
 }
 
-#search-bar input {
+#search-bar input,
+#mode-input {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -90,7 +91,6 @@ header p {
 }
 
 .tutor-card h3 {
-  margin-bottom: 5px;
   color: #2c3e50;
 }
 
@@ -114,6 +114,12 @@ header p {
   flex-shrink: 0;
 }
 
+.rating {
+  margin-left: auto;
+  font-size: 13px;
+  color: #444;
+}
+
 footer {
   text-align: center;
   padding: 15px;
@@ -129,7 +135,8 @@ footer {
 
   #search-bar input,
   #search-bar button,
-  #reset-btn {
+  #reset-btn,
+  #mode-input {
     width: 100%;
   }
 

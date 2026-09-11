@@ -1,15 +1,15 @@
 // Sample tutor data (later this could come from a real database)
 const tutors = [
-  { name: "Ayesha Khan", subject: "Math", location: "Rawalpindi", price: 1500 },
-  { name: "Bilal Ahmed", subject: "Physics", location: "Islamabad", price: 2000 },
-  { name: "Sara Malik", subject: "English", location: "Rawalpindi", price: 1200 },
-  { name: "Usman Tariq", subject: "Chemistry", location: "Lahore", price: 1800 },
-  { name: "Hina Raza", subject: "Math", location: "Islamabad", price: 1600 },
-  { name: "Ali Hassan", subject: "Biology", location: "Rawalpindi", price: 1700 },
-  { name: "Fatima Sheikh", subject: "English", location: "Islamabad", price: 1400 },
-  { name: "Zain Abbas", subject: "Computer Science", location: "Lahore", price: 2200 },
-  { name: "Noor Fatima", subject: "Physics", location: "Rawalpindi", price: 1900 },
-  { name: "Danish Iqbal", subject: "Math", location: "Lahore", price: 1300 }
+  { name: "Ayesha Khan", subject: "Math", location: "Rawalpindi", price: 1500, rating: 4.8, mode: "Online" },
+  { name: "Bilal Ahmed", subject: "Physics", location: "Islamabad", price: 2000, rating: 4.5, mode: "In-person" },
+  { name: "Sara Malik", subject: "English", location: "Rawalpindi", price: 1200, rating: 4.9, mode: "Online" },
+  { name: "Usman Tariq", subject: "Chemistry", location: "Lahore", price: 1800, rating: 4.2, mode: "In-person" },
+  { name: "Hina Raza", subject: "Math", location: "Islamabad", price: 1600, rating: 4.7, mode: "Online" },
+  { name: "Ali Hassan", subject: "Biology", location: "Rawalpindi", price: 1700, rating: 4.3, mode: "In-person" },
+  { name: "Fatima Sheikh", subject: "English", location: "Islamabad", price: 1400, rating: 4.6, mode: "Online" },
+  { name: "Zain Abbas", subject: "Computer Science", location: "Lahore", price: 2200, rating: 4.9, mode: "Online" },
+  { name: "Noor Fatima", subject: "Physics", location: "Rawalpindi", price: 1900, rating: 4.4, mode: "In-person" },
+  { name: "Danish Iqbal", subject: "Math", location: "Lahore", price: 1300, rating: 4.1, mode: "In-person" }
 ];
 
 // Grab the container where tutor cards will go
@@ -31,10 +31,12 @@ function displayTutors(list) {
       <div class="card-top">
         <div class="avatar">${tutor.name.charAt(0)}</div>
         <h3>${tutor.name}</h3>
+        <span class="rating">⭐ ${tutor.rating}</span>
       </div>
       <p><strong>Subject:</strong> ${tutor.subject}</p>
       <p><strong>Location:</strong> ${tutor.location}</p>
       <p><strong>Price:</strong> Rs. ${tutor.price}</p>
+      <p><strong>Mode:</strong> ${tutor.mode}</p>
     `;
     tutorList.appendChild(card);
   });
@@ -47,6 +49,7 @@ displayTutors(tutors);
 const subjectInput = document.getElementById("subject-input");
 const locationInput = document.getElementById("location-input");
 const priceInput = document.getElementById("price-input");
+const modeInput = document.getElementById("mode-input");
 const searchBtn = document.getElementById("search-btn");
 const resetBtn = document.getElementById("reset-btn");
 
@@ -55,13 +58,15 @@ function filterTutors() {
   const subjectValue = subjectInput.value.trim().toLowerCase();
   const locationValue = locationInput.value.trim().toLowerCase();
   const priceValue = priceInput.value.trim();
+  const modeValue = modeInput.value;
 
   const filtered = tutors.filter(tutor => {
     const matchesSubject = subjectValue === "" || tutor.subject.toLowerCase().includes(subjectValue);
     const matchesLocation = locationValue === "" || tutor.location.toLowerCase().includes(locationValue);
     const matchesPrice = priceValue === "" || tutor.price <= Number(priceValue);
+    const matchesMode = modeValue === "" || tutor.mode === modeValue;
 
-    return matchesSubject && matchesLocation && matchesPrice;
+    return matchesSubject && matchesLocation && matchesPrice && matchesMode;
   });
 
   displayTutors(filtered);
@@ -84,5 +89,6 @@ resetBtn.addEventListener("click", () => {
   subjectInput.value = "";
   locationInput.value = "";
   priceInput.value = "";
+  modeInput.value = "";
   displayTutors(tutors);
 });
