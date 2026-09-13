@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-    <nav class="navbar">
+   <nav class="navbar">
   <div class="nav-logo">🎓 Tuition Finder</div>
-  <div class="nav-links" id="nav-links">
-    <!-- Filled in dynamically by nav.js based on login status -->
+  <div class="nav-right">
+    <button id="theme-toggle" class="theme-toggle">🌙</button>
+    <div class="nav-links" id="nav-links">
+      <!-- Filled in dynamically by nav.js based on login status -->
+    </div>
   </div>
 </nav>
 <head>
@@ -23,11 +26,17 @@
     <p>Log in to your account</p>
   </header>
 
-  <main>
+  <main class="auth-page">
+  <div class="auth-visual">
+    <span>🎓</span>
+    <h2>Find your perfect tutor</h2>
+    <p>Join thousands of students and teachers connecting every day.</p>
+    </div>
     <section id="auth-form">
       <input type="email" id="email-input" placeholder="Email">
       <input type="password" id="password-input" placeholder="Password">
       <button id="login-btn">Log In</button>
+      <p><a href="#" id="forgot-link">Forgot password?</a></p>
       <p id="auth-message"></p>
       <p>Don't have an account? <a href="signup.html">Sign up</a></p>
     </section>

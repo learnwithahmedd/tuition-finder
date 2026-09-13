@@ -2,8 +2,11 @@
 <html lang="en">
 <nav class="navbar">
   <div class="nav-logo">🎓 Tuition Finder</div>
-  <div class="nav-links" id="nav-links">
-    <!-- Filled in dynamically by nav.js based on login status -->
+  <div class="nav-right">
+    <button id="theme-toggle" class="theme-toggle">🌙</button>
+    <div class="nav-links" id="nav-links">
+      <!-- Filled in dynamically by nav.js based on login status -->
+    </div>
   </div>
 </nav>
 <head>
@@ -18,17 +21,28 @@
 </head>
 <body>
 
-  <header>
-    <div class="logo-row">
-      <span class="logo-icon">🎓</span>
-      <h1>Tuition Finder</h1>
-    </div>
-    <p>Find the right tutor for you</p>
-  </header>
+ <header class="hero">
+  <div class="hero-bg-shape shape1"></div>
+  <div class="hero-bg-shape shape2"></div>
+
+  <div class="logo-row">
+    <span class="logo-icon">🎓</span>
+    <h1>Tuition Finder</h1>
+  </div>
+  <p class="hero-subtitle">Connect with trusted tutors near you — in minutes.</p>
+
+  <div class="hero-cta">
+    <a href="#search-bar" class="hero-btn primary">Find a Tutor</a>
+    <a href="signup.html" class="hero-btn secondary">Become a Tutor</a>
+  </div>
+
+  <p id="hero-count" class="hero-count"></p>
+</header>
 
   <main>
     <section id="search-bar">
       <input type="text" id="subject-input" placeholder="Subject (e.g. Math)">
+      <input type="text" id="name-input" placeholder="Tutor name">
       <input type="text" id="location-input" placeholder="Location">
       <input type="number" id="price-input" placeholder="Max price">
       <select id="mode-input">
