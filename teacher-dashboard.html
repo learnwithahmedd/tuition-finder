@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<nav class="navbar">
+    <nav class="navbar">
   <div class="nav-logo">🎓 Tuition Finder</div>
   <div class="nav-links" id="nav-links">
     <!-- Filled in dynamically by nav.js based on login status -->
@@ -8,12 +8,9 @@
 </nav>
 <head>
   <meta charset="UTF-8">
-  <title>Tuition Finder</title>
-
+  <title>Teacher Dashboard - Tuition Finder</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,38 +18,34 @@
   <header>
     <div class="logo-row">
       <span class="logo-icon">🎓</span>
-      <h1>Tuition Finder</h1>
+      <h1>Teacher Dashboard</h1>
     </div>
-    <p>Find the right tutor for you</p>
+    <p id="welcome-text">Welcome!</p>
   </header>
 
-  <main>
-    <section id="search-bar">
+   <main>
+    <div class="dashboard-layout">
+    <section id="auth-form">
+      <h3>Add Your Tuition Listing</h3>
       <input type="text" id="subject-input" placeholder="Subject (e.g. Math)">
       <input type="text" id="location-input" placeholder="Location">
-      <input type="number" id="price-input" placeholder="Max price">
+      <input type="number" id="price-input" placeholder="Fee (Rs.)">
+      <input type="text" id="phone-input" placeholder="WhatsApp number (e.g. 923001234567)">
       <select id="mode-input">
-        <option value="">Any mode</option>
         <option value="Online">Online</option>
         <option value="In-person">In-person</option>
       </select>
-      <select id="sort-input">
-        <option value="">Sort by</option>
-        <option value="price-low">Price: Low to High</option>
-        <option value="rating-high">Rating: High to Low</option>
-      </select>
-      <button id="search-btn">Search</button>
-      <button id="reset-btn">Reset</button>
+      <button id="save-btn">Save Listing</button>
+      <p id="status-message"></p>
     </section>
-
-    <p id="results-count"></p>
 
     <section id="tutor-list">
-      <!-- Tutor cards go here, filled in by script.js -->
-    </section>
+      <h3 style="text-align:center; margin-bottom: 10px;">Your Listings</h3>
+        </section>
+    </div>
 
-    <p style="text-align:center; margin-top: 10px;">
-      <a href="login.html">Are you a tutor or student? Log in / Sign up</a>
+    <p style="text-align:center; margin-top: 20px;">
+      <a href="#" id="logout-link">Log out</a>
     </p>
   </main>
 
@@ -60,7 +53,7 @@
     <p>&copy; 2026 Tuition Finder</p>
   </footer>
 
-   <script type="module" src="script.js"></script>
+    <script type="module" src="teacher-dashboard.js"></script>
   <script type="module" src="nav.js"></script>
 </body>
 </html>

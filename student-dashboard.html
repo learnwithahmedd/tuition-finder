@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <nav class="navbar">
+  <div class="nav-logo">🎓 Tuition Finder</div>
+  <div class="nav-links" id="nav-links">
+    <!-- Filled in dynamically by nav.js based on login status -->
+  </div>
+</nav>
+<head>
+  <meta charset="UTF-8">
+  <title>Student Dashboard - Tuition Finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo-row">
+      <span class="logo-icon">🎓</span>
+      <h1>Student Dashboard</h1>
+    </div>
+    <p id="welcome-text">Welcome!</p>
+  </header>
+
+  <main style="text-align:center; padding: 30px;">
+    <p>Ready to find a tutor?</p>
+    <a href="index.html" class="contact-btn" style="background-color:#2c3e50;">Search Tutors</a>
+    <p style="margin-top: 30px;"><a href="#" id="logout-link">Log out</a></p>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Tuition Finder</p>
+  </footer>
+
+   <script type="module" src="student-dashboard.js"></script>
+  <script type="module" src="nav.js"></script>
+</body>
+</html>

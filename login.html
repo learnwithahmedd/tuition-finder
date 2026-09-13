@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <nav class="navbar">
+  <div class="nav-logo">🎓 Tuition Finder</div>
+  <div class="nav-links" id="nav-links">
+    <!-- Filled in dynamically by nav.js based on login status -->
+  </div>
+</nav>
+<head>
+  <meta charset="UTF-8">
+  <title>Log In - Tuition Finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo-row">
+      <span class="logo-icon">🎓</span>
+      <h1>Tuition Finder</h1>
+    </div>
+    <p>Log in to your account</p>
+  </header>
+
+  <main>
+    <section id="auth-form">
+      <input type="email" id="email-input" placeholder="Email">
+      <input type="password" id="password-input" placeholder="Password">
+      <button id="login-btn">Log In</button>
+      <p id="auth-message"></p>
+      <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Tuition Finder</p>
+  </footer>
+
+    <script type="module" src="login.js"></script>
+  <script type="module" src="nav.js"></script>
+</body>
+</html>
