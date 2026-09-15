@@ -8,6 +8,7 @@ const locationInput = document.getElementById("location-input");
 const priceInput = document.getElementById("price-input");
 const phoneInput = document.getElementById("phone-input");
 const modeInput = document.getElementById("mode-input");
+const bioInput = document.getElementById("bio-input");
 const saveBtn = document.getElementById("save-btn");
 const cancelEditBtn = document.getElementById("cancel-edit-btn");
 const statusMessage = document.getElementById("status-message");
@@ -24,6 +25,12 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
   currentUser = user;
+  if (!user.emailVerified) {
+  const banner = document.createElement("p");
+  banner.textContent = "⚠️ Please verify your email — check your inbox.";
+  banner.style.cssText = "text-align:center; background:#fff3cd; color:#856404; padding:10px; border-radius:8px; margin: 10px auto; max-width:600px;";
+  document.querySelector("main").prepend(banner);
+}
   const userDoc = await getDoc(doc(db, "users", user.uid));
   if (userDoc.exists()) {
     teacherName = userDoc.data().name;
@@ -36,7 +43,8 @@ saveBtn.addEventListener("click", async () => {
   const subject = subjectInput.value.trim();
   const location = locationInput.value.trim();
   const price = priceInput.value.trim();
-  const phone = phoneInput.value.trim();
+ const phone = phoneInput.value.trim();
+const bio = bioInput.value.trim();
   const mode = modeInput.value;
 
   if (!subject || !location || !price) {
@@ -47,18 +55,18 @@ saveBtn.addEventListener("click", async () => {
   try {
     if (editingId) {
       // Update the existing listing instead of creating a new one
-      await updateDoc(doc(db, "listings", editingId), {
-        subject, location, price: Number(price), phone, mode
-      });
+     await updateDoc(doc(db, "listings", editingId), {
+  subject, location, price: Number(price), phone, bio, mode
+});
       statusMessage.textContent = "Listing updated!";
       exitEditMode();
     } else {
       await addDoc(collection(db, "listings"), {
-        teacherId: currentUser.uid,
-        name: teacherName,
-        subject, location, price: Number(price), phone, mode,
-        rating: 4.5
-      });
+      teacherId: currentUser.uid,
+      name: teacherName,
+      subject, location, price: Number(price), phone, bio, mode,
+      rating: 4.5
+});
       statusMessage.textContent = "Listing saved!";
     }
 
@@ -66,6 +74,7 @@ saveBtn.addEventListener("click", async () => {
     locationInput.value = "";
     priceInput.value = "";
     phoneInput.value = "";
+    bioInput.value = "";
     loadMyListings();
 
   } catch (error) {
@@ -97,6 +106,7 @@ cancelEditBtn.addEventListener("click", () => {
   locationInput.value = "";
   priceInput.value = "";
   phoneInput.value = "";
+  bioInput.value = "";
 });
 
 async function loadMyListings() {

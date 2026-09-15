@@ -1,6 +1,7 @@
 import { auth, db } from "./firebase-config.js";
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const nameInput = document.getElementById("name-input");
 const emailInput = document.getElementById("email-input");
@@ -24,11 +25,13 @@ signupBtn.addEventListener("click", async () => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const uid = userCredential.user.uid;
-
+    await sendEmailVerification(userCredential.user);
+   
     await setDoc(doc(db, "users", uid), {
       name: name,
       email: email,
       role: role
+      
     });
 
     authMessage.textContent = "Account created! Redirecting...";

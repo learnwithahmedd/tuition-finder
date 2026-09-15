@@ -735,4 +735,19 @@ p {
 [data-theme="dark"] .empty-state,
 [data-theme="dark"] .auth-visual p {
   color: #8a97a5;
+}#auth-form textarea {
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  resize: vertical;
+}
+.tutor-bio {
+  font-style: italic;
+  color: #777;
+  font-size: 12.5px;
+  margin-top: 6px;
+  border-top: 1px solid #eee;
+  padding-top: 6px;
 }

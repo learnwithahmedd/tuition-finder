@@ -1,6 +1,7 @@
 import { db, auth } from "./firebase-config.js";
 import { collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { addDoc as addFavDoc, deleteDoc, query as favQuery, where as favWhere } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 function renderStars(rating) {
   const fullStars = Math.floor(rating);
@@ -12,11 +13,17 @@ function renderStars(rating) {
   return stars;
 }
 let tutors = [];
-let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+let favorites = []; // now loaded from Firestore per logged-in student
 let loggedInStudent = null;
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   loggedInStudent = user;
+  if (user) {
+    const q = favQuery(collection(db, "favorites"), favWhere("studentId", "==", user.uid));
+    const snapshot = await getDocs(q);
+    favorites = snapshot.docs.map(d => ({ id: d.id, listingId: d.data().listingId }));
+  }
+  displayTutors(tutors);
 });
 
 const tutorList = document.getElementById("tutor-list");
@@ -47,14 +54,14 @@ async function displayTutors(list) {
     const card = document.createElement("div");
     card.className = "tutor-card" + (avg >= 4.7 ? " top-rated" : "");
 
-    const isFavorited = favorites.includes(tutor.name);
+    const isFavorited = favorites.some(f => f.listingId === tutor.id);
     const whatsappLink = tutor.phone
       ? `https://wa.me/${tutor.phone}?text=Hi%20${encodeURIComponent(tutor.name)},%20I%20found%20you%20on%20Tuition%20Finder%20and%20I'm%20interested%20in%20${encodeURIComponent(tutor.subject)}%20tuition.`
       : null;
 
     card.innerHTML = `
       ${avg >= 4.7 ? '<span class="top-badge">🏆 Top Rated</span>' : ""}
-      <button class="favorite-btn ${isFavorited ? "active" : ""}" data-name="${tutor.name}">
+     <button class="favorite-btn ${isFavorited ? "active" : ""}" data-id="${tutor.id}">
         ${isFavorited ? "❤️" : "🤍"}
       </button>
       <div class="card-top">
@@ -66,6 +73,7 @@ async function displayTutors(list) {
       <p><strong>Location:</strong> ${tutor.location}</p>
       <p><strong>Price:</strong> Rs. ${tutor.price}</p>
       <p><strong>Mode:</strong> ${tutor.mode}</p>
+      ${tutor.bio ? `<p class="tutor-bio">${tutor.bio}</p>` : ""}
       ${whatsappLink ? `<a class="contact-btn" href="${whatsappLink}" target="_blank">Contact via WhatsApp</a>` : ""}
       ${loggedInStudent ? `<button class="review-btn" data-id="${tutor.id}" data-name="${tutor.name}">Leave a Review</button>` : ""}
     `;
@@ -81,18 +89,31 @@ async function displayTutors(list) {
   });
 }
 
-function toggleFavorite(name, btn) {
-  if (favorites.includes(name)) {
-    favorites = favorites.filter(n => n !== name);
+async function toggleFavorite(listingId, btn) {
+  if (!loggedInStudent) {
+    alert("Please log in as a student to save tutors.");
+    return;
+  }
+
+  const existing = favorites.find(f => f.listingId === listingId);
+
+  if (existing) {
+    await deleteDoc(doc(db, "favorites", existing.id));
+    favorites = favorites.filter(f => f.listingId !== listingId);
     btn.classList.remove("active");
     btn.textContent = "🤍";
   } else {
-    favorites.push(name);
+    const newFav = await addFavDoc(collection(db, "favorites"), {
+      studentId: loggedInStudent.uid,
+      listingId: listingId
+    });
+    favorites.push({ id: newFav.id, listingId });
     btn.classList.add("active");
     btn.textContent = "❤️";
   }
-  localStorage.setItem("favorites", JSON.stringify(favorites));
 }
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+
 
 async function submitReview(listingId, tutorName) {
   const ratingStr = prompt(`Rate ${tutorName} out of 5 (e.g. 4.5):`);
@@ -189,5 +210,6 @@ resetBtn.addEventListener("click", () => {
   priceInput.value = "";
   modeInput.value = "";
   sortInput.value = "";
+  bioInput.value = "";
   displayTutors(tutors);
 });
