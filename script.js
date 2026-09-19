@@ -248,6 +248,19 @@ sortInput.addEventListener("change", filterTutors);
     if (e.key === "Enter") filterTutors();
   });
 });
+const scrollTopBtn = document.getElementById("scroll-top-btn");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 400) {
+    scrollTopBtn.classList.add("visible");
+  } else {
+    scrollTopBtn.classList.remove("visible");
+  }
+});
+
+scrollTopBtn.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
 
 resetBtn.addEventListener("click", () => {
   nameInput.value = "";
