@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tutor Profile - Tuition Finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+ <nav class="navbar">
+  <div class="nav-logo">🎓 Tuition Finder</div>
+  <button id="hamburger-btn" class="hamburger-btn">☰</button>
+  <div class="nav-right" id="nav-right">
+    <button id="theme-toggle" class="theme-toggle">🌙</button>
+    <div class="nav-links" id="nav-links"></div>
+  </div>
+</nav>
+
+  <main>
+    <a href="index.html" class="back-link">← Back to search</a>
+    <div id="profile-container">
+      <div class="skeleton-card">
+        <div class="skeleton-line skeleton-title"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+
+    <section id="reviews-section">
+      <h3>Reviews</h3>
+      <div id="reviews-list"></div>
+    </section>
+  </main>
+
+ <footer class="site-footer">
+  <div class="footer-links">
+    <a href="index.html">Search</a>
+    <a href="signup.html">Become a Tutor</a>
+    <a href="login.html">Log in</a>
+  </div>
+  <p>&copy; 2026 Tuition Finder — built with ❤️ in Pakistan</p>
+</footer>
+
+  <div id="toast-container"></div>
+
+  <script type="module" src="tutor.js"></script>
+  <script type="module" src="nav.js"></script>
+</body>
+</html>

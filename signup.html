@@ -2,11 +2,10 @@
 <html lang="en">
   <nav class="navbar">
   <div class="nav-logo">🎓 Tuition Finder</div>
-  <div class="nav-right">
+  <button id="hamburger-btn" class="hamburger-btn">☰</button>
+  <div class="nav-right" id="nav-right">
     <button id="theme-toggle" class="theme-toggle">🌙</button>
-    <div class="nav-links" id="nav-links">
-      <!-- Filled in dynamically by nav.js based on login status -->
-    </div>
+    <div class="nav-links" id="nav-links"></div>
   </div>
 </nav>
 <head>
@@ -51,9 +50,14 @@
     </section>
   </main>
 
-  <footer>
-    <p>&copy; 2026 Tuition Finder</p>
-  </footer>
+  <footer class="site-footer">
+  <div class="footer-links">
+    <a href="index.html">Search</a>
+    <a href="signup.html">Become a Tutor</a>
+    <a href="login.html">Log in</a>
+  </div>
+  <p>&copy; 2026 Tuition Finder — built with ❤️ in Pakistan</p>
+</footer>
 
     <script type="module" src="signup.js"></script>
   <script type="module" src="nav.js"></script>

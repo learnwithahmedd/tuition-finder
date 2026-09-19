@@ -1,7 +1,18 @@
 import { db, auth } from "./firebase-config.js";
-import { collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, getDocs, addDoc, query, where, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { addDoc as addFavDoc, deleteDoc, query as favQuery, where as favWhere } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+let tutors = [];
+let favorites = [];
+let loggedInStudent = null;
+
+function showToast(message, isError = false) {
+  const toast = document.createElement("div");
+  toast.className = "toast" + (isError ? " error" : "");
+  toast.textContent = message;
+  document.getElementById("toast-container").appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
 
 function renderStars(rating) {
   const fullStars = Math.floor(rating);
@@ -12,22 +23,21 @@ function renderStars(rating) {
   stars += "☆".repeat(Math.max(emptyCount, 0));
   return stars;
 }
-let tutors = [];
-let favorites = []; // now loaded from Firestore per logged-in student
-let loggedInStudent = null;
+
+const tutorList = document.getElementById("tutor-list");
+const resultsCount = document.getElementById("results-count");
 
 onAuthStateChanged(auth, async (user) => {
   loggedInStudent = user;
   if (user) {
-    const q = favQuery(collection(db, "favorites"), favWhere("studentId", "==", user.uid));
+    const q = query(collection(db, "favorites"), where("studentId", "==", user.uid));
     const snapshot = await getDocs(q);
     favorites = snapshot.docs.map(d => ({ id: d.id, listingId: d.data().listingId }));
+  } else {
+    favorites = [];
   }
   displayTutors(tutors);
 });
-
-const tutorList = document.getElementById("tutor-list");
-const resultsCount = document.getElementById("results-count");
 
 async function getAverageRating(listingId, fallback) {
   const q = query(collection(db, "reviews"), where("listingId", "==", listingId));
@@ -35,7 +45,7 @@ async function getAverageRating(listingId, fallback) {
   if (snapshot.empty) return { avg: fallback, count: 0 };
 
   let total = 0;
-  snapshot.forEach(doc => total += doc.data().rating);
+  snapshot.forEach(d => total += d.data().rating);
   return { avg: (total / snapshot.size).toFixed(1), count: snapshot.size };
 }
 
@@ -61,7 +71,7 @@ async function displayTutors(list) {
 
     card.innerHTML = `
       ${avg >= 4.7 ? '<span class="top-badge">🏆 Top Rated</span>' : ""}
-     <button class="favorite-btn ${isFavorited ? "active" : ""}" data-id="${tutor.id}">
+      <button class="favorite-btn ${isFavorited ? "active" : ""}" data-id="${tutor.id}">
         ${isFavorited ? "❤️" : "🤍"}
       </button>
       <div class="card-top">
@@ -74,6 +84,7 @@ async function displayTutors(list) {
       <p><strong>Price:</strong> Rs. ${tutor.price}</p>
       <p><strong>Mode:</strong> ${tutor.mode}</p>
       ${tutor.bio ? `<p class="tutor-bio">${tutor.bio}</p>` : ""}
+            <a class="profile-link" href="tutor.html?id=${tutor.id}">View Profile →</a>
       ${whatsappLink ? `<a class="contact-btn" href="${whatsappLink}" target="_blank">Contact via WhatsApp</a>` : ""}
       ${loggedInStudent ? `<button class="review-btn" data-id="${tutor.id}" data-name="${tutor.name}">Leave a Review</button>` : ""}
     `;
@@ -81,7 +92,7 @@ async function displayTutors(list) {
   }
 
   document.querySelectorAll(".favorite-btn").forEach(btn => {
-    btn.addEventListener("click", () => toggleFavorite(btn.dataset.name, btn));
+    btn.addEventListener("click", () => toggleFavorite(btn.dataset.id, btn));
   });
 
   document.querySelectorAll(".review-btn").forEach(btn => {
@@ -91,7 +102,7 @@ async function displayTutors(list) {
 
 async function toggleFavorite(listingId, btn) {
   if (!loggedInStudent) {
-    alert("Please log in as a student to save tutors.");
+    showToast("Please log in as a student to save tutors.", true);
     return;
   }
 
@@ -103,7 +114,7 @@ async function toggleFavorite(listingId, btn) {
     btn.classList.remove("active");
     btn.textContent = "🤍";
   } else {
-    const newFav = await addFavDoc(collection(db, "favorites"), {
+    const newFav = await addDoc(collection(db, "favorites"), {
       studentId: loggedInStudent.uid,
       listingId: listingId
     });
@@ -112,31 +123,65 @@ async function toggleFavorite(listingId, btn) {
     btn.textContent = "❤️";
   }
 }
-  localStorage.setItem("favorites", JSON.stringify(favorites));
 
+// --- Review modal logic ---
+let reviewTargetId = null;
+let selectedStars = 0;
 
-async function submitReview(listingId, tutorName) {
-  const ratingStr = prompt(`Rate ${tutorName} out of 5 (e.g. 4.5):`);
-  const rating = parseFloat(ratingStr);
+const reviewModal = document.getElementById("review-modal");
+const reviewTutorName = document.getElementById("review-tutor-name");
+const starPicker = document.getElementById("star-picker");
+const reviewComment = document.getElementById("review-comment");
 
-  if (!rating || rating < 1 || rating > 5) {
-    alert("Please enter a valid rating between 1 and 5.");
+function openReviewModal(listingId, tutorName) {
+  reviewTargetId = listingId;
+  selectedStars = 0;
+  reviewComment.value = "";
+  reviewTutorName.textContent = `Rating ${tutorName}`;
+  starPicker.querySelectorAll("span").forEach(s => s.classList.remove("active"));
+  reviewModal.classList.add("active");
+}
+
+starPicker.querySelectorAll("span").forEach(star => {
+  star.addEventListener("click", () => {
+    selectedStars = Number(star.dataset.value);
+    starPicker.querySelectorAll("span").forEach(s => {
+      s.classList.toggle("active", Number(s.dataset.value) <= selectedStars);
+    });
+  });
+});
+
+document.getElementById("modal-cancel").addEventListener("click", () => {
+  reviewModal.classList.remove("active");
+});
+
+document.getElementById("modal-submit").addEventListener("click", async () => {
+  if (!selectedStars) {
+    showToast("Please select a star rating.", true);
     return;
   }
 
-  const comment = prompt("Optional: leave a short comment") || "";
-
   await addDoc(collection(db, "reviews"), {
-    listingId: listingId,
+    listingId: reviewTargetId,
     studentId: loggedInStudent.uid,
-    rating: rating,
-    comment: comment
+    rating: selectedStars,
+    comment: reviewComment.value.trim()
   });
 
-  alert("Thanks for your review!");
+  reviewModal.classList.remove("active");
+  showToast("Thanks for your review!");
   filterTutors();
+});
+
+function submitReview(listingId, tutorName) {
+  if (!loggedInStudent) {
+    showToast("Please log in as a student to leave a review.", true);
+    return;
+  }
+  openReviewModal(listingId, tutorName);
 }
 
+// --- Load listings ---
 async function loadListings() {
   tutorList.innerHTML = Array(3).fill(`
     <div class="skeleton-card">
@@ -148,7 +193,7 @@ async function loadListings() {
   `).join("");
 
   const snapshot = await getDocs(collection(db, "listings"));
-  tutors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  tutors = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
   const heroCount = document.getElementById("hero-count");
   if (heroCount) heroCount.textContent = `${tutors.length} tutor${tutors.length !== 1 ? "s" : ""} ready to help you`;
@@ -158,6 +203,7 @@ async function loadListings() {
 
 loadListings();
 
+// --- Search / filter ---
 const nameInput = document.getElementById("name-input");
 const subjectInput = document.getElementById("subject-input");
 const locationInput = document.getElementById("location-input");
@@ -210,6 +256,5 @@ resetBtn.addEventListener("click", () => {
   priceInput.value = "";
   modeInput.value = "";
   sortInput.value = "";
-  bioInput.value = "";
   displayTutors(tutors);
 });

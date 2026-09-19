@@ -45,3 +45,9 @@ onAuthStateChanged(auth, async (user) => {
     `;
   }
 });
+const hamburgerBtn = document.getElementById("hamburger-btn");
+const navRight = document.getElementById("nav-right");
+
+hamburgerBtn.addEventListener("click", () => {
+  navRight.classList.toggle("open");
+});

@@ -2,7 +2,7 @@ import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const ADMIN_EMAIL = "YOUR_EMAIL_HERE@gmail.com";
+const ADMIN_EMAIL = "learnwithahmedd@gmail.com";
 
 onAuthStateChanged(auth, async (user) => {
   if (!user || user.email !== ADMIN_EMAIL) {

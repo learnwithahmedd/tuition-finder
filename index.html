@@ -2,11 +2,10 @@
 <html lang="en">
 <nav class="navbar">
   <div class="nav-logo">🎓 Tuition Finder</div>
-  <div class="nav-right">
+  <button id="hamburger-btn" class="hamburger-btn">☰</button>
+  <div class="nav-right" id="nav-right">
     <button id="theme-toggle" class="theme-toggle">🌙</button>
-    <div class="nav-links" id="nav-links">
-      <!-- Filled in dynamically by nav.js based on login status -->
-    </div>
+    <div class="nav-links" id="nav-links"></div>
   </div>
 </nav>
 <head>
@@ -70,11 +69,36 @@
     </p>
   </main>
 
-  <footer>
-    <p>&copy; 2026 Tuition Finder</p>
-  </footer>
+  <footer class="site-footer">
+  <div class="footer-links">
+    <a href="index.html">Search</a>
+    <a href="signup.html">Become a Tutor</a>
+    <a href="login.html">Log in</a>
+  </div>
+  <p>&copy; 2026 Tuition Finder — built with ❤️ in Pakistan</p>
+</footer>
 
    <script type="module" src="script.js"></script>
   <script type="module" src="nav.js"></script>
+  <div id="toast-container"></div>
+
+<div id="review-modal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>Leave a Review</h3>
+    <p id="review-tutor-name"></p>
+    <div id="star-picker">
+      <span data-value="1">★</span>
+      <span data-value="2">★</span>
+      <span data-value="3">★</span>
+      <span data-value="4">★</span>
+      <span data-value="5">★</span>
+    </div>
+    <textarea id="review-comment" placeholder="Optional comment..." rows="3"></textarea>
+    <div class="modal-actions">
+      <button id="modal-cancel" class="secondary-btn">Cancel</button>
+      <button id="modal-submit">Submit Review</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
