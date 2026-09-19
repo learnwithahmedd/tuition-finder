@@ -1142,3 +1142,45 @@ body {
 }
 
 }
+#load-more-btn {
+  display: block;
+  margin: 10px auto 20px;
+  padding: 12px 30px;
+  background: white;
+  color: #2c3e50;
+  border: 2px solid #2c3e50;
+  border-radius: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+#load-more-btn:hover {
+  background: #2c3e50;
+  color: white;
+}
+.subject-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 700px;
+  margin: 24px auto 0;
+  padding: 0 20px;
+}
+
+.chip {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background: white;
+  color: #444;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip:hover {
+  border-color: #4a6fa5;
+  color: #2c3e50;
+}

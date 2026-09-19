@@ -2,6 +2,10 @@ import { db, auth } from "./firebase-config.js";
 import { collection, getDocs, addDoc, query, where, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+let currentFilteredList = [];
+let visibleCount = 6;
+const PAGE_SIZE = 6;
+
 let tutors = [];
 let favorites = [];
 let loggedInStudent = null;
@@ -50,6 +54,7 @@ async function getAverageRating(listingId, fallback) {
 }
 
 async function displayTutors(list) {
+  currentFilteredList = list;
   tutorList.innerHTML = "";
   resultsCount.textContent = `${list.length} tutor${list.length !== 1 ? "s" : ""} found`;
 
@@ -58,7 +63,9 @@ async function displayTutors(list) {
     return;
   }
 
-  for (const tutor of list) {
+  const visibleList = list.slice(0, visibleCount);
+
+  for (const tutor of visibleList) {
     const { avg, count } = await getAverageRating(tutor.id, tutor.rating);
 
     const card = document.createElement("div");
@@ -76,7 +83,7 @@ async function displayTutors(list) {
       </button>
       <div class="card-top">
         <div class="avatar">${tutor.name.charAt(0)}</div>
-        <h3>${tutor.name}</h3>
+        <h3>${tutor.name} ${tutor.verified ? '<span title="Verified Tutor">✅</span>' : ""}</h3>
         <span class="rating"><span class="stars">${renderStars(avg)}</span> ${avg} ${count > 0 ? `(${count})` : ""}</span>
       </div>
       <p><strong>Subject:</strong> ${tutor.subject}</p>
@@ -90,13 +97,23 @@ async function displayTutors(list) {
     `;
     tutorList.appendChild(card);
   }
-
+  if (list.length > visibleCount) {
+    const loadMoreBtn = document.createElement("button");
+    loadMoreBtn.id = "load-more-btn";
+    loadMoreBtn.textContent = "Load More Tutors";
+    loadMoreBtn.addEventListener("click", () => {
+      visibleCount += PAGE_SIZE;
+      displayTutors(currentFilteredList);
+    });
+    tutorList.appendChild(loadMoreBtn);
+  }
   document.querySelectorAll(".favorite-btn").forEach(btn => {
     btn.addEventListener("click", () => toggleFavorite(btn.dataset.id, btn));
   });
 
   document.querySelectorAll(".review-btn").forEach(btn => {
     btn.addEventListener("click", () => submitReview(btn.dataset.id, btn.dataset.name));
+    
   });
 }
 
@@ -214,6 +231,7 @@ const searchBtn = document.getElementById("search-btn");
 const resetBtn = document.getElementById("reset-btn");
 
 function filterTutors() {
+  visibleCount = PAGE_SIZE;
   const nameValue = nameInput.value.trim().toLowerCase();
   const subjectValue = subjectInput.value.trim().toLowerCase();
   const locationValue = locationInput.value.trim().toLowerCase();
@@ -263,6 +281,14 @@ scrollTopBtn.addEventListener("click", () => {
 });
 
 resetBtn.addEventListener("click", () => {
+  document.querySelectorAll(".chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    subjectInput.value = chip.dataset.subject;
+    filterTutors();
+    document.getElementById("search-bar").scrollIntoView({ behavior: "smooth" });
+  });
+});
+  visibleCount = PAGE_SIZE;
   nameInput.value = "";
   subjectInput.value = "";
   locationInput.value = "";

@@ -8,6 +8,14 @@ const reviewsList = document.getElementById("reviews-list");
 const params = new URLSearchParams(window.location.search);
 const listingId = params.get("id");
 
+function showToast(message) {
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.textContent = message;
+  document.getElementById("toast-container").appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
+
 function renderStars(rating) {
   const full = Math.floor(rating);
   const hasHalf = rating - full >= 0.5;
@@ -50,7 +58,7 @@ async function loadProfile() {
       <div class="profile-header">
         <div class="avatar large">${t.name.charAt(0)}</div>
         <div>
-          <h2>${t.name}</h2>
+        <h2>${t.name} ${t.verified ? '<span title="Verified Tutor">✅</span>' : ""}</h2>
           <p class="profile-rating">
             <span class="stars">${renderStars(avg)}</span> ${avg}
             ${reviews.length ? `(${reviews.length} review${reviews.length !== 1 ? "s" : ""})` : "(no reviews yet)"}
@@ -86,5 +94,12 @@ function renderReviews(reviews) {
     </div>
   `).join("");
 }
+document.addEventListener("click", (e) => {
+  if (e.target.id === "share-btn") {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      showToast("Link copied to clipboard!");
+    });
+  }
+});
 
 loadProfile();
