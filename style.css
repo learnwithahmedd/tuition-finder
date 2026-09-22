@@ -322,7 +322,8 @@ footer {
   header h1 {
     font-size: 22px;
   }
-  @media (max-width: 600px) {
+}
+ @media (max-width: 600px) {
   #search-bar {
     flex-direction: column;
     align-items: stretch;
@@ -1139,8 +1140,6 @@ body {
 @keyframes pageFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
-}
-
 }
 #load-more-btn {
   display: block;
